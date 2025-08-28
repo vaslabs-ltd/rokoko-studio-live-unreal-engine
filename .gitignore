@@ -81,3 +81,8 @@ ToRelease/
 
 #vscode
 .vscode/
+.ignore
+*.code-workspace
+
+#Linux
+Makefile
