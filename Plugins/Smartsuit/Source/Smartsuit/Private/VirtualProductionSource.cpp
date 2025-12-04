@@ -8,8 +8,6 @@
 #include "Roles/LiveLinkLightRole.h"
 #include "Roles/LiveLinkLightTypes.h"
 #include "Features/IModularFeatures.h"
-#include "Roles/LiveLinkSmartsuitRole.h"
-#include "Roles/LiveLinkSmartsuitTypes.h"
 
 #include "VirtualProductionFrame.h"
 #include "Runtime/Core/Public/Containers/UnrealString.h"
@@ -27,9 +25,9 @@ FVirtualProductionSource::FVirtualProductionSource(FIPv4Endpoint address, const 
 	, SourceMachineName(InSourceMachineName)
 {
 	Client = nullptr;
-	
+
 	m_NetworkAddress = address;
-	
+
 	UE_LOG(LogTemp, Warning, TEXT("Creating Virtual production source!!!"));
 
 	if (InitSocket())
@@ -86,20 +84,20 @@ void FVirtualProductionSource::HandleClearSubject(const FName subjectName)
 		return;
 	}
 
-	Client->RemoveSubject_AnyThread(FLiveLinkSubjectKey(SourceGuid,subjectName));
+	Client->RemoveSubject_AnyThread(FLiveLinkSubjectKey(SourceGuid, subjectName));
 }
 
-void FVirtualProductionSource::ClearAllSubjects() 
+void FVirtualProductionSource::ClearAllSubjects()
 {
-	for (int i = 0; i < subjectNames.Num(); i++) 
+	for (int i = 0; i < subjectNames.Num(); i++)
 	{
 		HandleClearSubject(subjectNames[i]);
 	}
-	for (int i = 0; i < faceNames.Num(); i++) 
+	for (int i = 0; i < faceNames.Num(); i++)
 	{
 		HandleClearSubject(faceNames[i]);
 	}
-	for (int i = 0; i < actorNames.Num(); i++) 
+	for (int i = 0; i < actorNames.Num(); i++)
 	{
 		HandleClearSubject(actorNames[i]);
 	}
@@ -116,7 +114,7 @@ bool FVirtualProductionSource::RequestSourceShutdown()
 	return true;
 }
 
-void FVirtualProductionSource::HandleFaceData(const FFace& face) 
+void FVirtualProductionSource::HandleFaceData(const FFace& face)
 {
 	//verify(Client != nullptr);
 
@@ -135,7 +133,7 @@ void FVirtualProductionSource::HandleFaceData(const FFace& face)
 	FLiveLinkSkeletonStaticData* SkeletonData = StaticData.Cast<FLiveLinkSkeletonStaticData>();
 
 	SkeletonData->PropertyNames.Append(
-		{ 
+		{
 			"browDownLeft",
 			"browDownRight",
 			"browInnerUp",
@@ -225,26 +223,26 @@ void FVirtualProductionSource::HandleSubjectData(const FVirtualProductionSubject
 			Client->PushSubjectStaticData_AnyThread(Key, ULiveLinkCameraRole::StaticClass(), MoveTemp(CameraData));
 		}
 		else
-		if (testval.StartsWith("Light"))
-		{
-			FLiveLinkStaticDataStruct LightData(FLiveLinkLightStaticData::StaticStruct());
-			FLiveLinkLightStaticData& LightStaticData = *LightData.Cast<FLiveLinkLightStaticData>();
+			if (testval.StartsWith("Light"))
+			{
+				FLiveLinkStaticDataStruct LightData(FLiveLinkLightStaticData::StaticStruct());
+				FLiveLinkLightStaticData& LightStaticData = *LightData.Cast<FLiveLinkLightStaticData>();
 
-			Client->PushSubjectStaticData_AnyThread(Key, ULiveLinkLightRole::StaticClass(), MoveTemp(LightData));
-		}
-		else
-		{
-			TArray<FName> boneNames;
-			boneNames.Add("Root");
-			TArray<int32> boneParents;
-			boneParents.Add(0);
+				Client->PushSubjectStaticData_AnyThread(Key, ULiveLinkLightRole::StaticClass(), MoveTemp(LightData));
+			}
+			else
+			{
+				TArray<FName> boneNames;
+				boneNames.Add("Root");
+				TArray<int32> boneParents;
+				boneParents.Add(0);
 
-			FLiveLinkStaticDataStruct StaticData(FLiveLinkSkeletonStaticData::StaticStruct());
-			FLiveLinkSkeletonStaticData* SkeletonData = StaticData.Cast<FLiveLinkSkeletonStaticData>();
-			SkeletonData->SetBoneNames(boneNames);
-			SkeletonData->SetBoneParents(boneParents);
-			Client->PushSubjectStaticData_AnyThread(Key, ULiveLinkAnimationRole::StaticClass(), MoveTemp(StaticData));
-		}
+				FLiveLinkStaticDataStruct StaticData(FLiveLinkSkeletonStaticData::StaticStruct());
+				FLiveLinkSkeletonStaticData* SkeletonData = StaticData.Cast<FLiveLinkSkeletonStaticData>();
+				SkeletonData->SetBoneNames(boneNames);
+				SkeletonData->SetBoneParents(boneParents);
+				Client->PushSubjectStaticData_AnyThread(Key, ULiveLinkAnimationRole::StaticClass(), MoveTemp(StaticData));
+			}
 	}
 	else
 	{
@@ -261,15 +259,15 @@ void FVirtualProductionSource::HandleSubjectData(const FVirtualProductionSubject
 	}
 	//UE_LOG(LogTemp, Warning, TEXT("SKELETON!! "), skeleton);
 }
-	
-void FVirtualProductionSource::HandleSuitData(const FSuitData& suit) 
+
+void FVirtualProductionSource::HandleSuitData(const FSuitData& suit)
 {
 	actorNames.Add(suit.GetSubjectName());
 
 	FLiveLinkSubjectKey Key = FLiveLinkSubjectKey(SourceGuid, suit.GetSubjectName());
 
-	static TArray<FName> boneNames = 
-	{ 
+	static TArray<FName> boneNames =
+	{
 		"Base",
 		"hip",
 		"spine",
@@ -348,7 +346,7 @@ void FVirtualProductionSource::HandleSuitData(const FSuitData& suit)
 		"leftToe",
 		"rightToe",
 	};
-	
+
 
 	static TArray<int32> boneParents =
 	{
@@ -430,7 +428,7 @@ void FVirtualProductionSource::HandleSuitData(const FSuitData& suit)
 		16, //60 - LeftToe
 		19 //61 - RightToe
 	};
-	
+
 
 	//#ifdef USE_SMARTSUIT_ANIMATION_ROLE
 	//FLiveLinkStaticDataStruct StaticData(FLiveLinkSmartsuitStaticData::StaticStruct());
@@ -444,12 +442,12 @@ void FVirtualProductionSource::HandleSuitData(const FSuitData& suit)
 	SkeletonData->SetBoneNames(boneNames);
 	SkeletonData->SetBoneParents(boneParents);
 
-	if(Client)
+	if (Client)
 	{
 		//#ifdef USE_SMARTSUIT_ANIMATION_ROLE
 		//	Client->PushSubjectStaticData_AnyThread(Key, ULiveLinkSmartsuitRole::StaticClass(), MoveTemp(StaticData));
 		//#else
-			Client->PushSubjectStaticData_AnyThread(Key, ULiveLinkAnimationRole::StaticClass(), MoveTemp(StaticData));
+		Client->PushSubjectStaticData_AnyThread(Key, ULiveLinkAnimationRole::StaticClass(), MoveTemp(StaticData));
 		//#endif
 	}
 }
@@ -475,20 +473,20 @@ void FVirtualProductionSource::CreateJoint(TArray<FTransform>& transforms, int32
 }
 
 
-void FVirtualProductionSource::HandleSuits(const TArray<FSuitData>& suits) 
+void FVirtualProductionSource::HandleSuits(const TArray<FSuitData>& suits)
 {
 	//UE_LOG(LogTemp, Warning, TEXT("Handling faces %d"), faces.Num());
 	existingActors.Empty();
 	notExistingSubjects.Empty();
-	for (int subjectIndex = 0; subjectIndex < suits.Num(); subjectIndex++) 
+	for (int subjectIndex = 0; subjectIndex < suits.Num(); subjectIndex++)
 	{
 		const FSuitData& subject = suits[subjectIndex];
 
 		//check in the known subjects list which ones don't exist anymore in subjects, and clear the ones that don't exist
 		bool nameExists = false;
-		for (int suitNameIndex = 0; suitNameIndex < actorNames.Num(); suitNameIndex++) 
+		for (int suitNameIndex = 0; suitNameIndex < actorNames.Num(); suitNameIndex++)
 		{
-			if (subject.GetSubjectName() == actorNames[suitNameIndex]) 
+			if (subject.GetSubjectName() == actorNames[suitNameIndex])
 			{
 				nameExists = true;
 				existingActors.Add(subject);
@@ -496,31 +494,31 @@ void FVirtualProductionSource::HandleSuits(const TArray<FSuitData>& suits)
 			}
 		}
 
-		if (!nameExists) 
+		if (!nameExists)
 		{
 			existingActors.Add(subject);
 			HandleSuitData(subject);
 		}
 		//check in the subjects for the ones that don't exist in the known subjects list and create the ones that don't exist
-		if (subjectIndex == suits.Num() - 1) 
+		if (subjectIndex == suits.Num() - 1)
 		{
-			for (int i = 0; i < actorNames.Num(); i++) 
+			for (int i = 0; i < actorNames.Num(); i++)
 			{
 				bool subjectExists = false;
-				for (int j = 0; j < existingActors.Num(); j++) 
+				for (int j = 0; j < existingActors.Num(); j++)
 				{
-					if (actorNames[i] == existingActors[j].GetSubjectName()) 
+					if (actorNames[i] == existingActors[j].GetSubjectName())
 					{
 						subjectExists = true;
 					}
 				}
-				if (!subjectExists) 
+				if (!subjectExists)
 				{
 					notExistingSubjects.Add(actorNames[i]);
 				}
 			}
 
-			for (int i = 0; i < notExistingSubjects.Num(); i++) 
+			for (int i = 0; i < notExistingSubjects.Num(); i++)
 			{
 				//UE_LOG(LogTemp, Warning, TEXT("Removing face"));
 				Client->RemoveSubject_AnyThread(FLiveLinkSubjectKey(SourceGuid, notExistingSubjects[i]));
@@ -536,18 +534,18 @@ void FVirtualProductionSource::HandleSuits(const TArray<FSuitData>& suits)
 		FLiveLinkFrameDataStruct FrameData1(FLiveLinkAnimationFrameData::StaticStruct());
 		FLiveLinkAnimationFrameData& AnimFrameData = *FrameData1.Cast<FLiveLinkAnimationFrameData>();
 		//#endif
-		
+
 		AnimFrameData.WorldTime = FLiveLinkWorldTime(/*(double)(timer.GetCurrentTime())*/);
 
 		TArray<FTransform> transforms;
 		transforms.Reset(62);
 		int32 transformIndex = transforms.AddUninitialized(1);
-		
+
 		transforms[transformIndex].SetLocation(FVector::ZeroVector);
 		transforms[transformIndex].SetRotation(FQuat::Identity);
 		transforms[transformIndex].SetScale3D(FVector::OneVector);
 
-		
+
 		CreateJoint(transforms, 0, nullptr, subject.Hip());
 		CreateJoint(transforms, -1, subject.Hip(), subject.GetBoneByName(SmartsuitBones::spine));
 		CreateJoint(transforms, 0, subject.GetBoneByName(SmartsuitBones::spine), subject.GetBoneByName(SmartsuitBones::chest));
@@ -571,7 +569,7 @@ void FVirtualProductionSource::HandleSuits(const TArray<FSuitData>& suits)
 		CreateJoint(transforms, -1, subject.GetBoneByName(SmartsuitBones::hip), subject.GetBoneByName(SmartsuitBones::rightUpLeg));
 		CreateJoint(transforms, 0, subject.GetBoneByName(SmartsuitBones::rightUpLeg), subject.GetBoneByName(SmartsuitBones::rightLeg));
 		CreateJoint(transforms, 0, subject.GetBoneByName(SmartsuitBones::rightLeg), subject.GetBoneByName(SmartsuitBones::rightFoot));
-		
+
 		CreateJoint(transforms, 0, subject.GetBoneByName(SmartsuitBones::leftHand), subject.GetBoneByName(SmartsuitBones::leftThumbProximal));
 		CreateJoint(transforms, 0, subject.GetBoneByName(SmartsuitBones::leftThumbProximal), subject.GetBoneByName(SmartsuitBones::leftThumbMedial));
 		CreateJoint(transforms, 0, subject.GetBoneByName(SmartsuitBones::leftThumbMedial), subject.GetBoneByName(SmartsuitBones::leftThumbDistal));
@@ -632,7 +630,7 @@ void FVirtualProductionSource::HandleSuits(const TArray<FSuitData>& suits)
 		//AnimFrameData.HasRightGlove = subject.hasRightGlove;
 		//#endif
 
-		if(Client)
+		if (Client)
 			Client->PushSubjectFrameData_AnyThread(FLiveLinkSubjectKey(SourceGuid, subject.GetSubjectName()), MoveTemp(FrameData1));
 	}
 }
@@ -654,9 +652,9 @@ void FVirtualProductionSource::HandleCharacters(const TArray<FCharacterData>& ch
 
 		//check in the known subjects list which ones don't exist anymore in subjects, and clear the ones that don't exist
 		bool nameExists = false;
-		for (int characterNameIndex = 0; characterNameIndex < characterNames.Num(); characterNameIndex++) 
+		for (int characterNameIndex = 0; characterNameIndex < characterNames.Num(); characterNameIndex++)
 		{
-			if (subject.GetSubjectName() == characterNames[characterNameIndex]) 
+			if (subject.GetSubjectName() == characterNames[characterNameIndex])
 			{
 				nameExists = true;
 				existingCharacters.Add(subject);
@@ -664,49 +662,49 @@ void FVirtualProductionSource::HandleCharacters(const TArray<FCharacterData>& ch
 			}
 		}
 
-		if (!nameExists) 
+		if (!nameExists)
 		{
 			existingCharacters.Add(subject);
 			HandleCharacterData(subject);
 		}
 		//check in the subjects for the ones that don't exist in the known subjects list and create the ones that don't exist
-		if (subjectIndex == characters.Num() - 1) 
+		if (subjectIndex == characters.Num() - 1)
 		{
-			for (int i = 0; i < actorNames.Num(); i++) 
+			for (int i = 0; i < characterNames.Num(); i++)
 			{
 				bool subjectExists = false;
-				for (int j = 0; j < existingCharacters.Num(); j++) 
+				for (int j = 0; j < existingCharacters.Num(); j++)
 				{
-					if (characterNames[i] == existingCharacters[j].GetSubjectName()) 
+					if (characterNames[i] == existingCharacters[j].GetSubjectName())
 					{
 						subjectExists = true;
 					}
 				}
-				if (!subjectExists) 
+				if (!subjectExists)
 				{
 					notExistingSubjects.Add(characterNames[i]);
 				}
 			}
 
-			for (int i = 0; i < notExistingSubjects.Num(); i++) 
+			for (int i = 0; i < notExistingSubjects.Num(); i++)
 			{
 				//UE_LOG(LogTemp, Warning, TEXT("Removing face"));
 				Client->RemoveSubject_AnyThread(FLiveLinkSubjectKey(SourceGuid, notExistingSubjects[i]));
-				actorNames.RemoveSingle(notExistingSubjects[i]);
+				characterNames.RemoveSingle(notExistingSubjects[i]);
 				notExistingSubjects.RemoveAt(i);
 			}
 		}
-		
+
 		FLiveLinkFrameDataStruct FrameData1(FLiveLinkAnimationFrameData::StaticStruct());
 		FLiveLinkAnimationFrameData& AnimFrameData = *FrameData1.Cast<FLiveLinkAnimationFrameData>();
-		
+
 		AnimFrameData.WorldTime = FLiveLinkWorldTime();
 
 		TArray<FTransform> transforms;
 		transforms.Reset(subject.joints.Num());
 		FTransform tm;
 
-		for(int x = 0; x < subject.joints.Num(); x++)
+		for (int x = 0; x < subject.joints.Num(); x++)
 		{
 			const int32 transformIndex = transforms.AddUninitialized(1);
 			const int parentIndex = subject.joints[x].parentIndex;
@@ -719,12 +717,12 @@ void FVirtualProductionSource::HandleCharacters(const TArray<FCharacterData>& ch
 			{
 				tm = subject.joints[x].transform;
 			}
-			
+
 			const FVector JointPosition = tm.GetLocation();
 			const FQuat JointRotation = tm.GetRotation();
 
 			FQuat preRotation = FQuat::MakeFromRotator(SavedSourceSettings->HipPreRotation);
-			
+
 			FVector AdjustedJointPosition;
 			FQuat qu;
 
@@ -758,7 +756,7 @@ void FVirtualProductionSource::HandleCharacters(const TArray<FCharacterData>& ch
 				// Change Rotation Order - YZX
 				qu = qy * qz * qx;
 			}
-			
+
 			if (parentIndex < 0 && !preRotation.IsIdentity())
 			{
 				AdjustedJointPosition = preRotation * AdjustedJointPosition;
@@ -767,17 +765,139 @@ void FVirtualProductionSource::HandleCharacters(const TArray<FCharacterData>& ch
 
 			transforms[transformIndex].SetComponents(qu, AdjustedJointPosition, FVector::One());
 		}
-		
+
 		AnimFrameData.Transforms.Append(transforms);
-		
-		if(Client)
+
+		if (Client)
 		{
 			Client->PushSubjectFrameData_AnyThread(FLiveLinkSubjectKey(SourceGuid, subject.GetSubjectName()), MoveTemp(FrameData1));
 		}
 	}
 }
 
-void FVirtualProductionSource::HandleCharacterData(const FCharacterData& character) 
+void FVirtualProductionSource::HandleNewtons(const TArray<FNewtonData>& newtons)
+{
+	if (Client == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Client was null!!!!!!"));
+		return;
+	}
+
+	existingNewtons.Empty();
+	notExistingSubjects.Empty();
+
+	if (newtons.Num() == 0) return;
+
+	for (int subjectIndex = 0; subjectIndex < newtons.Num(); subjectIndex++)
+	{
+		const FNewtonData& subject = newtons[subjectIndex];
+
+		//check in the known subjects list which ones don't exist anymore in subjects, and clear the ones that don't exist
+		bool nameExists = false;
+		for (int idx = 0; idx < newtonNames.Num(); idx++)
+		{
+			if (subject.GetSubjectName() == newtonNames[idx])
+			{
+				nameExists = true;
+				existingNewtons.Add(subject);
+				break;
+			}
+		}
+
+		if (!nameExists)
+		{
+			existingNewtons.Add(subject);
+			HandleNewtonData(subject);
+		}
+		//check in the subjects for the ones that don't exist in the known subjects list and create the ones that don't exist
+		if (subjectIndex == newtons.Num() - 1)
+		{
+			for (int i = 0; i < newtonNames.Num(); i++)
+			{
+				bool subjectExists = false;
+				for (int j = 0; j < existingNewtons.Num(); j++)
+				{
+					if (newtonNames[i] == existingNewtons[j].GetSubjectName())
+					{
+						subjectExists = true;
+					}
+				}
+				if (!subjectExists)
+				{
+					notExistingSubjects.Add(newtonNames[i]);
+				}
+			}
+
+			for (int i = 0; i < notExistingSubjects.Num(); i++)
+			{
+				Client->RemoveSubject_AnyThread(FLiveLinkSubjectKey(SourceGuid, notExistingSubjects[i]));
+				newtonNames.RemoveSingle(notExistingSubjects[i]);
+				notExistingSubjects.RemoveAt(i);
+			}
+		}
+
+		FLiveLinkFrameDataStruct FrameData1(FLiveLinkAnimationFrameData::StaticStruct());
+		FLiveLinkAnimationFrameData& AnimFrameData = *FrameData1.Cast<FLiveLinkAnimationFrameData>();
+
+		AnimFrameData.WorldTime = FLiveLinkWorldTime();
+
+		TArray<FTransform> transforms;
+		transforms.Reset(subject.Joints.Num());
+		FTransform tm;
+
+		for (int x = 0; x < subject.Joints.Num(); x++)
+		{
+			const int32 transformIndex = transforms.AddUninitialized(1);
+			const int parentIndex = subject.Joints[x].parentIndex;
+
+			if (parentIndex >= 0)
+			{
+				tm = subject.Joints[x].transform.GetRelativeTransform(subject.Joints[parentIndex].transform);
+			}
+			else
+			{
+				tm = subject.Joints[x].transform;
+			}
+
+			const FVector JointPosition = tm.GetLocation();
+			const FQuat JointRotation = tm.GetRotation();
+
+			FVector AdjustedJointPosition;
+			FQuat qu;
+
+			//convert meters to centimeters since values coming from unity are in meters
+			constexpr double WORLD_SCALE = 100.0;
+			AdjustedJointPosition = FVector(-JointPosition.X * WORLD_SCALE, -JointPosition.Y * WORLD_SCALE, JointPosition.Z * WORLD_SCALE);
+
+			// Quaternions - Convert Rotations from Studio to UE
+			const FVector jointRotationEuler = JointRotation.Euler();
+			const FQuat qx(FVector::UnitX(), FMath::DegreesToRadians(jointRotationEuler.X));
+			const FQuat qz(FVector::UnitZ(), FMath::DegreesToRadians(jointRotationEuler.Z));
+			const FQuat qy(FVector::UnitY(), FMath::DegreesToRadians(jointRotationEuler.Y));
+
+			// Change Rotation Order - ZYX
+			qu = qz * qy * qx;
+
+			if (parentIndex < 0)
+			{
+				static FQuat preRotation = FQuat::MakeFromEuler(FVector(90, 0, -90));
+				AdjustedJointPosition = preRotation * AdjustedJointPosition;
+				qu = preRotation * qu;
+			}
+
+			transforms[transformIndex].SetComponents(qu, AdjustedJointPosition, FVector::One());
+		}
+
+		AnimFrameData.Transforms.Append(transforms);
+
+		if (Client)
+		{
+			Client->PushSubjectFrameData_AnyThread(FLiveLinkSubjectKey(SourceGuid, subject.GetSubjectName()), MoveTemp(FrameData1));
+		}
+	}
+}
+
+void FVirtualProductionSource::HandleCharacterData(const FCharacterData& character)
 {
 	characterNames.Add(character.GetSubjectName());
 
@@ -785,8 +905,8 @@ void FVirtualProductionSource::HandleCharacterData(const FCharacterData& charact
 
 	TArray<FName> boneNames;
 	TArray<int32> boneParents;
-	
-	for(int x = 0; x < character.joints.Num(); x++)
+
+	for (int x = 0; x < character.joints.Num(); x++)
 	{
 		if (SavedSourceSettings != nullptr && SavedSourceSettings->bTrimNamespaces)
 		{
@@ -805,23 +925,50 @@ void FVirtualProductionSource::HandleCharacterData(const FCharacterData& charact
 		{
 			boneNames.Add(character.joints[x].name);
 		}
-		
-		boneParents.Add(character.joints[x].parentIndex );
+
+		boneParents.Add(character.joints[x].parentIndex);
 	}
-	
+
 	FLiveLinkStaticDataStruct StaticData(FLiveLinkSkeletonStaticData::StaticStruct());
 	FLiveLinkSkeletonStaticData* SkeletonData = StaticData.Cast<FLiveLinkSkeletonStaticData>();
-	
+
 	SkeletonData->SetBoneNames(boneNames);
 	SkeletonData->SetBoneParents(boneParents);
 
-	if(Client)
+	if (Client)
 	{
 		Client->PushSubjectStaticData_AnyThread(Key, ULiveLinkAnimationRole::StaticClass(), MoveTemp(StaticData));
 	}
 }
 
-void FVirtualProductionSource::HandleFace(const TArray<FFace>& faces) 
+void FVirtualProductionSource::HandleNewtonData(const FNewtonData& newton)
+{
+	newtonNames.Add(newton.GetSubjectName());
+
+	FLiveLinkSubjectKey Key = FLiveLinkSubjectKey(SourceGuid, newton.GetSubjectName());
+
+	TArray<FName> boneNames;
+	TArray<int32> boneParents;
+
+	for (int x = 0; x < newton.Joints.Num(); x++)
+	{
+		boneNames.Add(newton.Joints[x].name);
+		boneParents.Add(newton.Joints[x].parentIndex);
+	}
+
+	FLiveLinkStaticDataStruct StaticData(FLiveLinkSkeletonStaticData::StaticStruct());
+	FLiveLinkSkeletonStaticData* SkeletonData = StaticData.Cast<FLiveLinkSkeletonStaticData>();
+
+	SkeletonData->SetBoneNames(boneNames);
+	SkeletonData->SetBoneParents(boneParents);
+
+	if (Client)
+	{
+		Client->PushSubjectStaticData_AnyThread(Key, ULiveLinkAnimationRole::StaticClass(), MoveTemp(StaticData));
+	}
+}
+
+void FVirtualProductionSource::HandleFace(const TArray<FFace>& faces)
 {
 	//verify(Client != nullptr);
 
@@ -834,15 +981,15 @@ void FVirtualProductionSource::HandleFace(const TArray<FFace>& faces)
 	//UE_LOG(LogTemp, Warning, TEXT("Handling faces %d"), faces.Num());
 	existingFaces.Empty();
 	notExistingSubjects.Empty();
-	for (int subjectIndex = 0; subjectIndex < faces.Num(); subjectIndex++) 
+	for (int subjectIndex = 0; subjectIndex < faces.Num(); subjectIndex++)
 	{
 		const FFace& subject = faces[subjectIndex];
 
 		//check in the known subjects list which ones don't exist anymore in subjects, and clear the ones that don't exist
 		bool nameExists = false;
-		for (int faceNameIndex = 0; faceNameIndex < faceNames.Num(); faceNameIndex++) 
+		for (int faceNameIndex = 0; faceNameIndex < faceNames.Num(); faceNameIndex++)
 		{
-			if (subject.GetSubjectName() == faceNames[faceNameIndex]) 
+			if (subject.GetSubjectName() == faceNames[faceNameIndex])
 			{
 				nameExists = true;
 				existingFaces.Add(subject);
@@ -850,31 +997,31 @@ void FVirtualProductionSource::HandleFace(const TArray<FFace>& faces)
 			}
 		}
 
-		if (!nameExists) 
+		if (!nameExists)
 		{
 			existingFaces.Add(subject);
 			HandleFaceData(subject);
 		}
 		//check in the subjects for the ones that don't exist in the known subjects list and create the ones that don't exist
-		if (subjectIndex == faces.Num() - 1) 
+		if (subjectIndex == faces.Num() - 1)
 		{
-			for (int i = 0; i < faceNames.Num(); i++) 
+			for (int i = 0; i < faceNames.Num(); i++)
 			{
 				bool subjectExists = false;
-				for (int j = 0; j < existingFaces.Num(); j++) 
+				for (int j = 0; j < existingFaces.Num(); j++)
 				{
-					if (faceNames[i] == existingFaces[j].GetSubjectName()) 
+					if (faceNames[i] == existingFaces[j].GetSubjectName())
 					{
 						subjectExists = true;
 					}
 				}
-				if (!subjectExists) 
+				if (!subjectExists)
 				{
 					notExistingSubjects.Add(faceNames[i]);
 				}
 			}
 
-			for (int i = 0; i < notExistingSubjects.Num(); i++) 
+			for (int i = 0; i < notExistingSubjects.Num(); i++)
 			{
 				//UE_LOG(LogTemp, Warning, TEXT("Removing face"));
 				Client->RemoveSubject_AnyThread(FLiveLinkSubjectKey(SourceGuid, notExistingSubjects[i]));
@@ -960,37 +1107,37 @@ void FVirtualProductionSource::HandleSubjectFrame(const TArray<FVirtualProductio
 	existingSubjects.Empty();
 	notExistingSubjects.Empty();
 
-	for (int i = 0; i < subjectNames.Num(); i++) 
+	for (int i = 0; i < subjectNames.Num(); i++)
 	{
 		bool subjectExists = false;
-		for (int j = 0; j < Subjects.Num(); j++) 
+		for (int j = 0; j < Subjects.Num(); j++)
 		{
-			if (subjectNames[i] == Subjects[j].Name) 
+			if (subjectNames[i] == Subjects[j].Name)
 			{
 				subjectExists = true;
 			}
 		}
-		if (!subjectExists) 
+		if (!subjectExists)
 		{
 			notExistingSubjects.Add(subjectNames[i]);
 		}
 	}
 
-	for (int i = 0; i < notExistingSubjects.Num(); i++) 
+	for (int i = 0; i < notExistingSubjects.Num(); i++)
 	{
 		Client->RemoveSubject_AnyThread(FLiveLinkSubjectKey(SourceGuid, notExistingSubjects[i]));
 		subjectNames.RemoveSingle(notExistingSubjects[i]);
 	}
 
-	for (int subjectIndex = 0; subjectIndex < Subjects.Num(); subjectIndex++) 
+	for (int subjectIndex = 0; subjectIndex < Subjects.Num(); subjectIndex++)
 	{
 		FVirtualProductionSubject subject = Subjects[subjectIndex];
-		
+
 		//check in the known subjects list which ones don't exist anymore in subjects, and clear the ones that don't exist
 		bool nameExists = false;
-		for (int subjectNameIndex = 0; subjectNameIndex < subjectNames.Num(); subjectNameIndex++) 
+		for (int subjectNameIndex = 0; subjectNameIndex < subjectNames.Num(); subjectNameIndex++)
 		{
-			if (subject.Name == subjectNames[subjectNameIndex]) 
+			if (subject.Name == subjectNames[subjectNameIndex])
 			{
 				nameExists = true;
 				existingSubjects.Add(subject);
@@ -998,7 +1145,7 @@ void FVirtualProductionSource::HandleSubjectFrame(const TArray<FVirtualProductio
 			}
 		}
 
-		if (!nameExists) 
+		if (!nameExists)
 		{
 			existingSubjects.Add(subject);
 			HandleSubjectData(subject);
@@ -1027,33 +1174,33 @@ void FVirtualProductionSource::HandleSubjectFrame(const TArray<FVirtualProductio
 				CameraFrameData.Transform = hardCodedTransform;
 				CameraFrameData.AspectRatio = 1.11f;
 				CameraFrameData.FieldOfView = 130.f;
-				
-				Client->PushSubjectFrameData_AnyThread(FLiveLinkSubjectKey(SourceGuid, subject.Name), MoveTemp(FrameData1));
-			}
-			else
-			if (testval.StartsWith("light"))
-			{
-				FLiveLinkFrameDataStruct FrameData1(FLiveLinkLightFrameData::StaticStruct());
-				FLiveLinkLightFrameData& LightFrameData = *FrameData1.Cast<FLiveLinkLightFrameData>();
-				LightFrameData.WorldTime = FLiveLinkWorldTime(/*(double)(timer.GetCurrentTime())*/);
-				LightFrameData.Transform = hardCodedTransform;
-			
-				Client->PushSubjectFrameData_AnyThread(FLiveLinkSubjectKey(SourceGuid, subject.Name), MoveTemp(FrameData1));
-
-			}
-			else
-			{
-				//FTimer timer;
-				FLiveLinkFrameDataStruct FrameData1(FLiveLinkAnimationFrameData::StaticStruct());
-				FLiveLinkAnimationFrameData& AnimFrameData = *FrameData1.Cast<FLiveLinkAnimationFrameData>();
-				AnimFrameData.WorldTime = FLiveLinkWorldTime(/*(double)(timer.GetCurrentTime())*/);
-				AnimFrameData.Transforms.Add(hardCodedTransform);
 
 				Client->PushSubjectFrameData_AnyThread(FLiveLinkSubjectKey(SourceGuid, subject.Name), MoveTemp(FrameData1));
 			}
+			else
+				if (testval.StartsWith("light"))
+				{
+					FLiveLinkFrameDataStruct FrameData1(FLiveLinkLightFrameData::StaticStruct());
+					FLiveLinkLightFrameData& LightFrameData = *FrameData1.Cast<FLiveLinkLightFrameData>();
+					LightFrameData.WorldTime = FLiveLinkWorldTime(/*(double)(timer.GetCurrentTime())*/);
+					LightFrameData.Transform = hardCodedTransform;
+
+					Client->PushSubjectFrameData_AnyThread(FLiveLinkSubjectKey(SourceGuid, subject.Name), MoveTemp(FrameData1));
+
+				}
+				else
+				{
+					//FTimer timer;
+					FLiveLinkFrameDataStruct FrameData1(FLiveLinkAnimationFrameData::StaticStruct());
+					FLiveLinkAnimationFrameData& AnimFrameData = *FrameData1.Cast<FLiveLinkAnimationFrameData>();
+					AnimFrameData.WorldTime = FLiveLinkWorldTime(/*(double)(timer.GetCurrentTime())*/);
+					AnimFrameData.Transforms.Add(hardCodedTransform);
+
+					Client->PushSubjectFrameData_AnyThread(FLiveLinkSubjectKey(SourceGuid, subject.Name), MoveTemp(FrameData1));
+				}
 		}
 		else
-		//if (subject.name.ToString().StartsWith("tracker"))
+			//if (subject.name.ToString().StartsWith("tracker"))
 		{
 			//FTimer timer;
 			FLiveLinkFrameDataStruct FrameData1(FLiveLinkAnimationFrameData::StaticStruct());
@@ -1067,33 +1214,41 @@ void FVirtualProductionSource::HandleSubjectFrame(const TArray<FVirtualProductio
 }
 
 TSharedPtr<FVirtualProductionSource> FVirtualProductionSource::Get()
-{ 
+{
 	if (!instance)
 	{
 		IModularFeatures& ModularFeatures = IModularFeatures::Get();
 
 		if (ModularFeatures.IsModularFeatureAvailable(ILiveLinkClient::ModularFeatureName))
 		{
-			bool bDoesAlreadyExist = false;
+			ILiveLinkClient& LiveLinkClient = IModularFeatures::Get().GetModularFeature<ILiveLinkClient>(ILiveLinkClient::ModularFeatureName);
+			TArray<FGuid> Sources = LiveLinkClient.GetSources();
+			for (FGuid SourceGuid : Sources)
 			{
-				ILiveLinkClient& LiveLinkClient = IModularFeatures::Get().GetModularFeature<ILiveLinkClient>(ILiveLinkClient::ModularFeatureName);
-				TArray<FGuid> Sources = LiveLinkClient.GetSources();
-				for (FGuid SourceGuid : Sources)
+				if (LiveLinkClient.GetSourceType(SourceGuid).ToString() == "Studio")
 				{
-					if (LiveLinkClient.GetSourceType(SourceGuid).ToString() == "Studio")
-					{
-						//UE_LOG(LogTemp, Warning, TEXT("you can't add more than one instance of FVirtualProductionSource!!"));
-						bDoesAlreadyExist = true;
-
-						//SetInstance(LiveLinkClient.getsour)
-						break;
-					}
+					UE_LOG(LogTemp, Warning, TEXT("Remove already existed LiveLink Source and replace with new one"));
+					LiveLinkClient.RemoveSource(SourceGuid);
 				}
 			}
+
+			FIPv4Address address(FIPv4Address::Any);
+
+			FIPv4Endpoint Endpoint;
+			Endpoint.Address = address;
+			Endpoint.Port = 14043;
+
+			TSharedPtr<FVirtualProductionSource> Source = MakeShared<FVirtualProductionSource>(Endpoint, FText::FromString("Studio"), FText::FromString(""), FMessageAddress::NewAddress());
+			SetInstance(Source);
+			LiveLinkClient.AddSource(Source);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("[Rokoko] modular feature {0} is not available"), ILiveLinkClient::ModularFeatureName);
 		}
 	}
 
-	return instance; 
+	return instance;
 }
 
 TSharedPtr<FVirtualProductionSource> FVirtualProductionSource::CreateLiveLinkSource()
@@ -1128,7 +1283,7 @@ TSharedPtr<FVirtualProductionSource> FVirtualProductionSource::CreateLiveLinkSou
 			FIPv4Endpoint Endpoint;
 			Endpoint.Address = address;
 			Endpoint.Port = 14043;
-			
+
 			ILiveLinkClient* LiveLinkClient = &IModularFeatures::Get().GetModularFeature<ILiveLinkClient>(ILiveLinkClient::ModularFeatureName);
 			TSharedPtr<FVirtualProductionSource> Source = MakeShared<FVirtualProductionSource>(Endpoint, FText::FromString("Studio"), FText::FromString(""), FMessageAddress::NewAddress());
 			FVirtualProductionSource::SetInstance(Source);
@@ -1174,7 +1329,7 @@ bool FVirtualProductionSource::InitSocket()
 			UE_LOG(LogTemp, Error, TEXT("Failed to bind to address %s and port %i"), *addressStr, m_NetworkAddress.Port);
 			return false;
 		}
-		
+
 		//allow the socket to listen to an already bounded address.
 		Socket->SetReuseAddr(true);
 		Running = true;
@@ -1185,7 +1340,7 @@ bool FVirtualProductionSource::InitSocket()
 FString BytesToStringFixed(const uint8* In, int32 Count)
 {
 	FString Text = BytesToString(In, Count);
-	
+
 	for (int i = 0; i < Text.Len(); i++)
 	{
 		const TCHAR c = Text[i] - 1;
@@ -1297,7 +1452,7 @@ void UpdateSuitFromJson(FSuitData* suitData, const TSharedPtr<FJsonObject> jsonO
 	SuitParseBone(suitData, BodyObj, SmartsuitBones::rightLittleTip.ToString());
 }
 
-	
+
 
 
 void UpdateCharacterFromJson(FCharacterData* characterData, const TSharedPtr<FJsonObject> jsonObject)
@@ -1318,6 +1473,64 @@ void UpdateCharacterFromJson(FCharacterData* characterData, const TSharedPtr<FJs
 
 		FTransform JointTransform(JointRotation, JointPosition, FVector::OneVector);
 		characterData->joints.Add(FRokokoCharacterJoint(*JointName, JointParentIndex, JointTransform));
+	}
+}
+
+void UpdateNewtonsFromJson(UVirtualProductionSourceSettings* SavedSourceSettings, FNewtonData* newtonData, const TSharedPtr<FJsonObject> jsonObject)
+{
+	if (jsonObject->HasField(TEXT("name")))
+	{
+		newtonData->NewtonName = jsonObject->GetStringField(TEXT("name"));
+	}
+	else
+	{
+		newtonData->NewtonName = "UnknownName";
+	}
+
+	if (jsonObject->HasField(TEXT("meta")))
+	{
+		TSharedPtr<FJsonObject> Meta = jsonObject->GetObjectField(TEXT("meta"));
+		newtonData->HasFace = Meta->GetBoolField(TEXT("hasFace"));
+	}
+
+	if (jsonObject->HasField(TEXT("joints")))
+	{
+		TArray<TSharedPtr<FJsonValue>> JointsArray = jsonObject->GetArrayField(TEXT("joints"));
+
+		for (const auto& JointElem : JointsArray)
+		{
+			const TSharedPtr< FJsonObject > JoinJSONObject = JointElem->AsObject();
+
+			FRokokoCharacterJoint CharacterJoint;
+			CharacterJoint.name = *JoinJSONObject->GetStringField(TEXT("name"));
+			CharacterJoint.parentIndex = JoinJSONObject->GetIntegerField(TEXT("parent"));
+
+			// The Newton skeleton is a pre-defined skeleton where the root bone is the Actor-named bone.
+			// This option removes that bone to ensure that the actual root bone is the 'Root'-named bone.
+			// This provides better compatibility with some systems in UE.
+			if (SavedSourceSettings != nullptr && SavedSourceSettings->bExcludeActorRootBone)
+			{
+				if (CharacterJoint.parentIndex == -1)
+				{
+					continue;
+				}
+				else
+				{
+					CharacterJoint.parentIndex -= 1;
+				}
+			}
+
+			CharacterJoint.position = USmartsuitBlueprintLibrary::GetVectorField(JoinJSONObject->GetObjectField(TEXT("position")));
+			CharacterJoint.rotation = USmartsuitBlueprintLibrary::GetQuaternionField(JoinJSONObject->GetObjectField(TEXT("rotation")));
+
+			FTransform JointTransform(CharacterJoint.rotation, CharacterJoint.position, FVector::OneVector);
+			CharacterJoint.transform = JointTransform;
+			newtonData->Joints.Add(MoveTemp(CharacterJoint));
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Newton skeleton contains no joints"));
 	}
 }
 
@@ -1358,52 +1571,56 @@ uint32 FVirtualProductionSource::Run()
 			continue;
 		}
 
-		if (!Running) 
+		if (!Running)
 			break;
-				
+
 		FVirtualProductionFrame VPFrame;
-		
+
 		size_t srcSize = static_cast<size_t>(bytes_read);
 		size_t dstSize = static_cast<size_t>(UncompressedData.Num());
 		size_t decompressResult;
 		verify(srcSize >= 0);
 		verify(dstSize >= 0);
 		decompressResult = LZ4F_decompress(g_dCtx, UncompressedData.GetData(), &dstSize, PacketData.GetData(), &srcSize, nullptr);
-		if (decompressResult != 0) 
-		{ 
-			UE_LOG(LogTemp, Error, TEXT("Error decompressing frame : unfinished frame \n")); 
+		if (decompressResult != 0)
+		{
+			UE_LOG(LogTemp, Error, TEXT("Error decompressing frame : unfinished frame \n"));
 			continue;
 		}
-		if (srcSize != (size_t)bytes_read) 
-		{ 
-			UE_LOG(LogTemp, Error, TEXT("Error decompressing frame : read size incorrect \n")); 
+		if (srcSize != (size_t)bytes_read)
+		{
+			UE_LOG(LogTemp, Error, TEXT("Error decompressing frame : read size incorrect \n"));
 			continue;
 		}
 
 		FString result = BytesToStringFixed(UncompressedData.GetData(), static_cast<int32_t>(dstSize));
-				
+
 		TSharedPtr<FJsonObject> JsonObject;
 		TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(result);
 		if (FJsonSerializer::Deserialize(Reader, JsonObject))
 		{
 
 			VPFrame.Version = JsonObject->GetStringField(TEXT("version"));
-			
+
 			//SCENE
 			{
 				TSharedPtr<FJsonObject> SceneObj = JsonObject->GetObjectField(TEXT("scene"));
-				TArray<TSharedPtr<FJsonValue>> Livepropsarray = SceneObj->GetArrayField(TEXT("props"));
-
-				for (auto& currentprop : Livepropsarray)
+				if (SceneObj->HasField(TEXT("props")))
 				{
-					auto NewProp = FProp(true, currentprop->AsObject());
-					VPFrame.Props.Emplace(MoveTemp(NewProp));
+					TArray<TSharedPtr<FJsonValue>> Livepropsarray = SceneObj->GetArrayField(TEXT("props"));
+
+					for (auto& currentprop : Livepropsarray)
+					{
+						auto NewProp = FProp(true, currentprop->AsObject());
+						VPFrame.Props.Emplace(MoveTemp(NewProp));
+					}
 				}
 
 				if (SceneObj->HasField(TEXT("actors")))
 				{
-					TArray<TSharedPtr<FJsonValue>> Livesuitsarray = SceneObj->GetArrayField(TEXT("actors"));
-					for (auto& currentsuit : Livesuitsarray)
+
+					TArray<TSharedPtr<FJsonValue>> LivesuitsArray = SceneObj->GetArrayField(TEXT("actors"));
+					for (auto& currentsuit : LivesuitsArray)
 					{
 						FSuitData SuitData; // = FSuitData(true, currentsuit->AsObject());
 						SuitData.isLive = true;
@@ -1420,6 +1637,25 @@ uint32 FVirtualProductionSource::Run()
 					}
 				}
 
+				if (SceneObj->HasField(TEXT("newtons")))
+				{
+					TArray<TSharedPtr<FJsonValue>> NewtonsArray = SceneObj->GetArrayField(TEXT("newtons"));
+					for (auto& currentNewton : NewtonsArray)
+					{
+						FNewtonData NewtonData;
+						NewtonData.IsLive = true;
+						UpdateNewtonsFromJson(SavedSourceSettings, &NewtonData, currentNewton->AsObject());
+
+						if (NewtonData.HasFace)
+						{
+							auto JSONObjectface = currentNewton->AsObject()->GetObjectField(TEXT("face"));
+							auto FaceData = FFace(JSONObjectface, NewtonData.NewtonName);
+							VPFrame.Faces.Emplace(MoveTemp(FaceData));
+						}
+						VPFrame.Newtons.Emplace(MoveTemp(NewtonData));
+					}
+				}
+
 				if (SceneObj->HasField(TEXT("characters")))
 				{
 					TArray<TSharedPtr<FJsonValue>> CharactersArray = SceneObj->GetArrayField(TEXT("characters"));
@@ -1428,7 +1664,7 @@ uint32 FVirtualProductionSource::Run()
 						FCharacterData CharacterData;
 						CharacterData.IsLive = true;
 						UpdateCharacterFromJson(&CharacterData, currentcharacter->AsObject());
-						
+
 						VPFrame.Characters.Emplace(MoveTemp(CharacterData));
 					}
 				}
@@ -1440,7 +1676,7 @@ uint32 FVirtualProductionSource::Run()
 		GlobalVPFrame.Version = VPFrame.Version;
 		GlobalVPFrame.Props = MoveTemp(VPFrame.Props);
 		GlobalVPFrame.Trackers = MoveTemp(VPFrame.Trackers);
-		
+
 		Subjects.Empty();
 		for (int i = 0; i < VPFrame.Props.Num(); i++)
 		{
@@ -1452,17 +1688,19 @@ uint32 FVirtualProductionSource::Run()
 			FVirtualProductionSubject subject = GlobalVPFrame.Trackers[i].GetSubject();
 			Subjects.Add(subject);
 		}
-			
+
 		GlobalVPFrame.Faces = MoveTemp(VPFrame.Faces);
 		GlobalVPFrame.Actors = MoveTemp(VPFrame.Actors);
 		GlobalVPFrame.Characters = MoveTemp(VPFrame.Characters);
-		
+		GlobalVPFrame.Newtons = MoveTemp(VPFrame.Newtons);
+
 		mtx.unlock();
 
 		HandleSubjectFrame(Subjects);
 		HandleFace(GlobalVPFrame.Faces);
 		HandleSuits(GlobalVPFrame.Actors);
 		HandleCharacters(GlobalVPFrame.Characters);
+		HandleNewtons(GlobalVPFrame.Newtons);
 	}
 	return 0;
 }
@@ -1552,7 +1790,7 @@ TArray<FTracker> FVirtualProductionSource::GetTrackersWithMatchingId(FString Con
 
 FSuitData* FVirtualProductionSource::GetSmartsuitByName(FString suitName)
 {
-	
+
 	if (suitName.IsEmpty() || suitName.Compare(FString("")) == 0)
 	{
 		return nullptr;

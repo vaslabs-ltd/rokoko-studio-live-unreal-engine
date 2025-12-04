@@ -197,11 +197,11 @@ FFace::FFace(TSharedPtr<FJsonObject> jsonObject, const FString& InActorName)
 	actorName = InActorName;
 	if (!jsonObject->TryGetStringField(TEXT("profileName"), profileName))
 	{
-		profileName = TEXT("NOPROFILENAME for ") + faceId;
+		profileName = "NOPROFILENAME for " + faceId;
 	}
 
 	constexpr float scale{ 0.01f };
-
+	
 	eyeBlinkLeft = jsonObject->GetNumberField(TEXT("eyeBlinkLeft")) * scale;
 	eyeLookDownLeft = jsonObject->GetNumberField(TEXT("eyeLookDownLeft")) * scale;
 	eyeLookInLeft = jsonObject->GetNumberField(TEXT("eyeLookInLeft")) * scale;

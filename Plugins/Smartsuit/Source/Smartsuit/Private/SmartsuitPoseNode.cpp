@@ -5,14 +5,11 @@
 #include "LiveLinkCustomVersion.h"
 #include "LiveLinkClient.h"
 #include "RokokoSkeletonData.h"
-#include "Animation/AnimInstance.h"
 #include "Animation/AnimInstanceProxy.h"
 #include "Roles/LiveLinkAnimationRole.h"
 #include "SmartsuitBlueprintLibrary.h"
-#include "Roles/LiveLinkSmartsuitRole.h"
-#include "Roles/LiveLinkSmartsuitTypes.h"
-#include "Components/SkeletalMeshComponent.h"
-#include "Features/IModularFeatures.h"
+#include "Runtime/Core/Public/Features/IModularFeatures.h"
+
 
 /**Holds information a Smartsuit character pose.*/
 struct TPose {
@@ -664,7 +661,7 @@ void FSmartsuitPoseNode::EvaluateSkeletalControl_AnyThread(FComponentSpacePoseCo
 		FVector NewRootPosition = hipPosition;
 		NewRootPosition.Z = 0.0f;
 
-		// Make sure to initialize root motion position, otherwise we will get erronous results
+		// Make sure to initialize root motion position, otherwise we will get erroneous results
 		if (!bInitializedRootPosition)
 		{
 			OldRootPosition = NewRootPosition;
