@@ -22,11 +22,7 @@ void URokokoStudioCommandAPI::Info(const FRokokoCommandAPI_IPInfo& IPInfo, bool 
 
 	const FString URLPath = FString::Printf(TEXT("http://%s:%s/v2/%s/info"), *IPInfo.IPAddress, *IPInfo.Port, *IPInfo.APIKey);
 
-#if ENGINE_MAJOR_VERSION == 5 || (ENGINE_MAJOR_VERSION == 4 && ENGINE_MINOR_VERSION >= 26)
 	FHttpRequestRef HttpRequest = FHttpModule::Get().CreateRequest();
-#else
-	TSharedRef<IHttpRequest> HttpRequest = FHttpModule::Get().CreateRequest();
-#endif
 	HttpRequest->SetURL(URLPath);
 	HttpRequest->SetVerb(TEXT("POST"));
 	HttpRequest->SetHeader(TEXT("Content-Type"), TEXT("application/json; charset=utf-8"));
@@ -53,11 +49,7 @@ void URokokoStudioCommandAPI::Restart(const FRokokoCommandAPI_IPInfo& IPInfo, co
 
 	const FString URLPath = FString::Printf(TEXT("http://%s:%s/v1/%s/restart"), *IPInfo.IPAddress, *IPInfo.Port, *IPInfo.APIKey);
 
-#if ENGINE_MAJOR_VERSION == 5 || (ENGINE_MAJOR_VERSION == 4 && ENGINE_MINOR_VERSION >= 26)
 	FHttpRequestRef HttpRequest = FHttpModule::Get().CreateRequest();
-#else
-	TSharedRef<IHttpRequest> HttpRequest = FHttpModule::Get().CreateRequest();
-#endif
 	HttpRequest->SetURL(URLPath);
 	HttpRequest->SetVerb(TEXT("POST"));
 	HttpRequest->SetHeader(TEXT("Content-Type"), TEXT("application/json; charset=utf-8"));
@@ -76,11 +68,7 @@ void URokokoStudioCommandAPI::ResetActor(const FRokokoCommandAPI_IPInfo& IPInfo,
 
 	const FString URLPath = FString::Printf(TEXT("http://%s:%s/v2/%s/resetactor"), *IPInfo.IPAddress, *IPInfo.Port, *IPInfo.APIKey);
 
-#if ENGINE_MAJOR_VERSION == 5 || (ENGINE_MAJOR_VERSION == 4 && ENGINE_MINOR_VERSION >= 26)
 	FHttpRequestRef HttpRequest = FHttpModule::Get().CreateRequest();
-#else
-	TSharedRef<IHttpRequest> HttpRequest = FHttpModule::Get().CreateRequest();
-#endif
 	HttpRequest->SetURL(URLPath);
 	HttpRequest->SetVerb(TEXT("POST"));
 	HttpRequest->SetHeader(TEXT("Content-Type"), TEXT("application/json; charset=utf-8"));
@@ -110,11 +98,7 @@ void URokokoStudioCommandAPI::Calibrate(const FRokokoCommandAPI_IPInfo& IPInfo, 
 
 	const FString URLPath = FString::Printf(TEXT("http://%s:%s/v1/%s/calibrate"), *IPInfo.IPAddress, *IPInfo.Port, *IPInfo.APIKey);
 
-#if ENGINE_MAJOR_VERSION == 5 || (ENGINE_MAJOR_VERSION == 4 && ENGINE_MINOR_VERSION >= 26)
 	FHttpRequestRef HttpRequest = FHttpModule::Get().CreateRequest();
-#else
-	TSharedRef<IHttpRequest> HttpRequest = FHttpModule::Get().CreateRequest();
-#endif
 	HttpRequest->SetURL(URLPath);
 	HttpRequest->SetVerb(TEXT("POST"));
 	HttpRequest->SetHeader(TEXT("Content-Type"), TEXT("application/json; charset=utf-8"));
@@ -145,11 +129,7 @@ void URokokoStudioCommandAPI::Playback(const FRokokoCommandAPI_IPInfo& IPInfo, c
 
 	const FString URLPath = FString::Printf(TEXT("http://%s:%s/v2/%s/playback"), *IPInfo.IPAddress, *IPInfo.Port, *IPInfo.APIKey);
 
-#if ENGINE_MAJOR_VERSION == 5 || (ENGINE_MAJOR_VERSION == 4 && ENGINE_MINOR_VERSION >= 26)
 	FHttpRequestRef HttpRequest = FHttpModule::Get().CreateRequest();
-#else
-	TSharedRef<IHttpRequest> HttpRequest = FHttpModule::Get().CreateRequest();
-#endif
 	HttpRequest->SetURL(URLPath);
 	HttpRequest->SetVerb(TEXT("POST"));
 	HttpRequest->SetHeader(TEXT("Content-Type"), TEXT("application/json; charset=utf-8"));
@@ -176,11 +156,7 @@ void URokokoStudioCommandAPI::Livestream(const FRokokoCommandAPI_IPInfo& IPInfo,
 
 	const FString URLPath = FString::Printf(TEXT("http://%s:%s/v2/%s/livestream"), *IPInfo.IPAddress, *IPInfo.Port, *IPInfo.APIKey);
 
-#if ENGINE_MAJOR_VERSION == 5 || (ENGINE_MAJOR_VERSION == 4 && ENGINE_MINOR_VERSION >= 26)
 	FHttpRequestRef HttpRequest = FHttpModule::Get().CreateRequest();
-#else
-	TSharedRef<IHttpRequest> HttpRequest = FHttpModule::Get().CreateRequest();
-#endif
 	HttpRequest->SetURL(URLPath);
 	HttpRequest->SetVerb(TEXT("POST"));
 	HttpRequest->SetHeader(TEXT("Content-Type"), TEXT("application/json; charset=utf-8"));
@@ -205,11 +181,7 @@ void URokokoStudioCommandAPI::StartRecording(const FRokokoCommandAPI_IPInfo& IPI
 
 	const FString URLPath = FString::Printf(TEXT("http://%s:%s/v1/%s/recording/start"), *IPInfo.IPAddress, *IPInfo.Port, *IPInfo.APIKey);
 
-#if ENGINE_MAJOR_VERSION == 5 || (ENGINE_MAJOR_VERSION == 4 && ENGINE_MINOR_VERSION >= 26)
 	FHttpRequestRef HttpRequest = FHttpModule::Get().CreateRequest();
-#else
-	TSharedRef<IHttpRequest> HttpRequest = FHttpModule::Get().CreateRequest();
-#endif
 	HttpRequest->SetURL(URLPath);
 	HttpRequest->SetVerb(TEXT("POST"));
 	HttpRequest->SetHeader(TEXT("Content-Type"), TEXT("application/json; charset=utf-8"));
@@ -234,11 +206,7 @@ void URokokoStudioCommandAPI::StopRecording(const FRokokoCommandAPI_IPInfo& IPIn
 
 	const FString URLPath = FString::Printf(TEXT("http://%s:%s/v1/%s/recording/stop"), *IPInfo.IPAddress, *IPInfo.Port, *IPInfo.APIKey);
 
-#if ENGINE_MAJOR_VERSION == 5 || (ENGINE_MAJOR_VERSION == 4 && ENGINE_MINOR_VERSION >= 26)
 	FHttpRequestRef HttpRequest = FHttpModule::Get().CreateRequest();
-#else
-	TSharedRef<IHttpRequest> HttpRequest = FHttpModule::Get().CreateRequest();
-#endif
 	HttpRequest->SetURL(URLPath);
 	HttpRequest->SetVerb(TEXT("POST"));
 	HttpRequest->SetHeader(TEXT("Content-Type"), TEXT("application/json; charset=utf-8"));
@@ -284,11 +252,7 @@ void URokokoStudioCommandAPI::Tracker(const FRokokoCommandAPI_IPInfo& IPInfo, co
 
 	const FString URLPath = FString::Printf(TEXT("http://%s:%s/v2/%s/tracker"), *IPInfo.IPAddress, *IPInfo.Port, *IPInfo.APIKey);
 
-#if ENGINE_MAJOR_VERSION == 5 || (ENGINE_MAJOR_VERSION == 4 && ENGINE_MINOR_VERSION >= 26)
 	FHttpRequestRef HttpRequest = FHttpModule::Get().CreateRequest();
-#else
-	TSharedRef<IHttpRequest> HttpRequest = FHttpModule::Get().CreateRequest();
-#endif
 	HttpRequest->SetURL(URLPath);
 	HttpRequest->SetVerb(TEXT("POST"));
 	HttpRequest->SetHeader(TEXT("Content-Type"), TEXT("application/json; charset=utf-8"));

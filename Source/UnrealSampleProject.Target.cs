@@ -8,7 +8,7 @@ public class UnrealSampleProjectTarget : TargetRules
 	public UnrealSampleProjectTarget(TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Game;
-
-		ExtraModuleNames.AddRange( new string[] { "UnrealSampleProject" } );
+        DefaultBuildSettings = BuildSettingsVersion.Latest;
+        ExtraModuleNames.AddRange( new string[] { "UnrealSampleProject" } );
 	}
 }

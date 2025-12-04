@@ -5,12 +5,14 @@
 #include "LiveLinkCustomVersion.h"
 #include "LiveLinkClient.h"
 #include "RokokoSkeletonData.h"
+#include "Animation/AnimInstance.h"
 #include "Animation/AnimInstanceProxy.h"
 #include "Roles/LiveLinkAnimationRole.h"
 #include "SmartsuitBlueprintLibrary.h"
 #include "Roles/LiveLinkSmartsuitRole.h"
 #include "Roles/LiveLinkSmartsuitTypes.h"
-
+#include "Components/SkeletalMeshComponent.h"
+#include "Features/IModularFeatures.h"
 
 /**Holds information a Smartsuit character pose.*/
 struct TPose {

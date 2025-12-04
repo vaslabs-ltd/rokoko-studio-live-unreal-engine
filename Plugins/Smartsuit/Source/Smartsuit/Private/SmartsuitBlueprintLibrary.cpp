@@ -1,8 +1,11 @@
 // Copyright 2019 Rokoko Electronics. All Rights Reserved.
 
 #include "SmartsuitBlueprintLibrary.h"
+#include "SmartsuitController.h"
 #include "VirtualProductionSource.h"
 #include "Engine/SkeletalMesh.h"
+#include "Components/SkeletalMeshComponent.h"
+#include "UObject/UObjectIterator.h"
 
 
 FFace USmartsuitBlueprintLibrary::GetFaceByFaceID(FString faceId)
@@ -278,9 +281,9 @@ void USmartsuitBlueprintLibrary::JSONTest()
 FVector USmartsuitBlueprintLibrary::GetVectorField(TSharedPtr<FJsonObject> jsonObject)
 {
 	FVector ReturnVal;
-	ReturnVal.X = jsonObject->GetNumberField("x");
-	ReturnVal.Y = jsonObject->GetNumberField("y");
-	ReturnVal.Z = jsonObject->GetNumberField("z");
+	ReturnVal.X = jsonObject->GetNumberField(TEXT("x"));
+	ReturnVal.Y = jsonObject->GetNumberField(TEXT("y"));
+	ReturnVal.Z = jsonObject->GetNumberField(TEXT("z"));
 	return ReturnVal;
 }
 
@@ -290,7 +293,7 @@ FColor USmartsuitBlueprintLibrary::GetColorField(TSharedPtr<FJsonObject> jsonObj
 	const TArray<TSharedPtr<FJsonValue>>* ColorArray = nullptr;
 	
 	FColor Color;
-	if(jsonObject->TryGetArrayField("color", ColorArray))
+	if(jsonObject->TryGetArrayField(TEXT("color"), ColorArray))
 	{
 		Color.R = (*ColorArray)[0]->AsNumber();
 		Color.G = (*ColorArray)[1]->AsNumber();
@@ -303,9 +306,9 @@ FColor USmartsuitBlueprintLibrary::GetColorField(TSharedPtr<FJsonObject> jsonObj
 FLinearColor USmartsuitBlueprintLibrary::GetFLinearColorField(TSharedPtr<FJsonObject> jsonObject)
 {
 	FLinearColor LinearColor;
-	LinearColor.R = jsonObject->GetNumberField("x");
-	LinearColor.G = jsonObject->GetNumberField("y");
-	LinearColor.B = jsonObject->GetNumberField("z");
+	LinearColor.R = jsonObject->GetNumberField(TEXT("x"));
+	LinearColor.G = jsonObject->GetNumberField(TEXT("y"));
+	LinearColor.B = jsonObject->GetNumberField(TEXT("z"));
 
 	//this is so we can properly convert the color to srgb
 	FColor NewColor = LinearColor.QuantizeRound();
@@ -316,10 +319,10 @@ FLinearColor USmartsuitBlueprintLibrary::GetFLinearColorField(TSharedPtr<FJsonOb
 FQuat USmartsuitBlueprintLibrary::GetQuaternionField(TSharedPtr<FJsonObject> jsonObject)
 {
 	FQuat ReturnVal;
-	ReturnVal.X = jsonObject->GetNumberField("x");
-	ReturnVal.Y = jsonObject->GetNumberField("y");
-	ReturnVal.Z = jsonObject->GetNumberField("z");
-	ReturnVal.W = jsonObject->GetNumberField("w");
+	ReturnVal.X = jsonObject->GetNumberField(TEXT("x"));
+	ReturnVal.Y = jsonObject->GetNumberField(TEXT("y"));
+	ReturnVal.Z = jsonObject->GetNumberField(TEXT("z"));
+	ReturnVal.W = jsonObject->GetNumberField(TEXT("w"));
 	return ReturnVal;
 }
 
