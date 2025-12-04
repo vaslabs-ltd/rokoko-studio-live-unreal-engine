@@ -8,8 +8,7 @@ public class RokokoUEPluginEditorTarget : TargetRules
 	public RokokoUEPluginEditorTarget( TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Editor;
-		DefaultBuildSettings = BuildSettingsVersion.V5;
-		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_4;
+		DefaultBuildSettings = BuildSettingsVersion.Latest;
 		ExtraModuleNames.Add("RokokoUEPlugin");
 	}
 }
