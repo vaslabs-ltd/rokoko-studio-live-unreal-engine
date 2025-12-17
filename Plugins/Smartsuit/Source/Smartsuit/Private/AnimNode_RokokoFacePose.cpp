@@ -4,7 +4,7 @@
 #include "ILiveLinkClient.h"
 
 #include "Features/IModularFeatures.h"
-
+#include "Animation/AnimInstance.h"
 #include "Animation/AnimInstanceProxy.h"
 #include "LiveLinkCustomVersion.h"
 #include "LiveLinkRemapAsset.h"

@@ -94,7 +94,7 @@ struct FRokokoCommandAPI_PlaybackInput
 	UPROPERTY(BlueprintReadWrite, Category = "Rokoko Command API")
 	float PlaybackSpeed{ 1.0f };
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rokoko Command API", meta = (Bitmask, BitmaskEnum = EPlaybackChange))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rokoko Command API", meta = (Bitmask, BitmaskEnum = "/Script/Smartsuit.EPlaybackChange"))
 	int32 ChangeFlags = 0;
 };
 
