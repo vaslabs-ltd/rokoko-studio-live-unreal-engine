@@ -69,11 +69,11 @@ It is possible to animate a character in your packaged game. The most important 
 
 First make sure it is enabled.
 
-[!UDP-Plugin](/Images/udp_plugin.png)
+[!UDP-Plugin](Images/udp_plugin.png)
 
 Then apply the settings shown below:
 
-![UDP-Messaging](/Images/udp_messaging_settings.png)
+![UDP-Messaging](Images/udp_messaging_settings.png)
 
 Bare in mind that 0.0.0.0 binds to the default network interface on Windows and to all network interfaces (including your LAN IP) on Linux and Mac! Make sure you are on a secure network!
 
