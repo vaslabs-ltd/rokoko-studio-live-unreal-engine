@@ -79,7 +79,7 @@ Bare in mind that 0.0.0.0 binds to the default network interface on Windows and 
 
 Alternatively consult the settings from [Unreal Engine docs](https://dev.epicgames.com/documentation/en-us/unreal-engine/udp-messaging-settings-in-the-unreal-engine-project-settings) for a configuration that suits your needs!
 
-> [!Troubleshooting]
+> [!IMPORTANT]
 > If you notice that the Unreal Engine settings do not persist across restarts, add the below to your project's Config/DefaultEngine.ini 
 
 ```ini
@@ -114,7 +114,7 @@ restart your engine to confirm these settings persist.
 Package your game and before you run it make sure Unreal Engine is closed
 otherwise neither the Editor nor your Game may have the working streamed animation.
 
-> [!Troubleshooting]
+> [!IMPORTANT]
 > - Make sure the name of the actor and the skeletal mesh match as in your editor.
 > - If you want a more dynamic way to stream actors with different names,
 you'll need to add the programming yourself
