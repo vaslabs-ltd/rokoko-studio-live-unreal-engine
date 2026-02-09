@@ -69,7 +69,7 @@ It is possible to animate a character in your packaged game. The most important 
 
 First make sure it is enabled.
 
-[!UDP-Plugin](Images/udp_plugin.png)
+![UDP-Plugin](Images/udp_plugin.png)
 
 Then apply the settings shown below:
 
