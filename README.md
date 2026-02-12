@@ -75,7 +75,7 @@ Then apply the settings shown below:
 
 ![UDP-Messaging](Images/udp_messaging_settings.png)
 
-Bare in mind that 0.0.0.0 binds to the default network interface on Windows and to all network interfaces (including your LAN IP) on Linux and Mac! Make sure you are on a secure network!
+Bare in mind that 0.0.0.0 binds to the default network interface on Windows and to all network interfaces (including your LAN IP) on Linux and Mac! Make sure you are on a trusted network!
 
 Alternatively consult the settings from [Unreal Engine docs](https://dev.epicgames.com/documentation/en-us/unreal-engine/udp-messaging-settings-in-the-unreal-engine-project-settings) for a configuration that suits your needs!
 
