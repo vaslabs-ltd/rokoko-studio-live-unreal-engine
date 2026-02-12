@@ -126,7 +126,7 @@ you'll need to add the programming yourself
 ### Expected results
 
 It's suggested that at your first try you use the RokokoUIController so
-you may understand better the reason when things are not working. Check
+you may understand better the reason in case things are not working. Check
 the images below for some working and non-working scenarios.
 
 #### Not connected / Not streaming from Rokoko Studio
